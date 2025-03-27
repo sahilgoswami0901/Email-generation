@@ -8,7 +8,7 @@ function App() {
   const [emailText, setEmailText] = useState("");
   const [showSend, setShowSend] = useState(false);
 
-  const BACKEND_URL = "https://email-generation-backend-l60b.onrender.com";
+  const BACKEND_URL = "https://email-generation-backend-gofe.onrender.com";
 
   const handleGenerate = async () => {
     try {
