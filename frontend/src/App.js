@@ -8,34 +8,46 @@ function App() {
   const [emailText, setEmailText] = useState("");
   const [showSend, setShowSend] = useState(false);
 
-  const handleGenerate = async () => {
-    const res = await fetch("https://email-sender-d4mq.onrender.com/api/generate-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ recipient: recipientEmail, prompt })
-    });
+  const BACKEND_URL = "https://email-generation-backend-8pmu.onrender.com";
 
-    const data = await res.json();
-    setEmailText(data.email);
-    setShowSend(true);
+  const handleGenerate = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/generate-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipient: recipientEmail, prompt }),
+      });
+
+      const data = await res.json();
+      setEmailText(data.email);
+      setShowSend(true);
+    } catch (err) {
+      console.error("Generation error:", err.message);
+      alert("Failed to generate email");
+    }
   };
 
   const handleSend = async () => {
-    const res = await fetch("https://email-sender-d4mq.onrender.com/api/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: recipientEmail,
-        subject: "Generated Email",
-        text: emailText
-      })
-    });
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: recipientEmail,
+          subject: "Generated Email",
+          text: emailText,
+        }),
+      });
 
-    if (res.ok) {
-      alert("Email sent successfully!");
-      setShowSend(false);
-    } else {
-      alert("Failed to send email.");
+      if (res.ok) {
+        alert("Email sent successfully!");
+        setShowSend(false);
+      } else {
+        alert("Failed to send email.");
+      }
+    } catch (err) {
+      console.error("Send error:", err.message);
+      alert("Error occurred while sending email.");
     }
   };
 
